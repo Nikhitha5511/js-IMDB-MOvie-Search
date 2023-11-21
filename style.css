@@ -2,34 +2,70 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f4f4f4;
-  }
-  
-  .container {
-    max-width: 800px;
-    width: 100%;
-    padding: 20px;
-    box-sizing: border-box;
-  }
-  
-  h1 {
     text-align: center;
+    height: 100vh;
+    background-color: antiquewhite;
+  }
+  h1{
+    color:rgb(77, 77, 123);
+    font-size: 34px;
+    font-weight: bold;
+    margin-top:25px;
+  }
+  .input-search-bar{
+    height:25px;
+    background-color: rgb(77, 77, 123);
+    color:white;
+    padding:3px;
+    border-radius: 4px;
+    border:none;
+  }
+.input-search-bar::placeholder{
+  color:white;
+  font-size: 15px;
+  font-weight: bold;
+
+}
+.search-btn{
+  height:25px;
+  background-color: rgb(77, 77, 123);
+  color:white;
+  padding:2px;
+  border-radius: 4px;
+  border: none;
+  margin-right:-20px;
+}
+.searchPageContainer{
+  display:flex;
+  flex-direction: column;
+}
+
+button{
+  height:20px;
+  background-color: rgb(78, 78, 134);
+  color:white;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  margin-top:-15px;
+  margin-right:50px;
+}
+.movie-container{
+  text-align: center;
+}
+@keyframes example {
+  from{
+   transform:scale(0.7);
+  }
+  to{
+   transform:scale(1.1);
+
   }
   
-  input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-  
-  .movies {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    grid-gap: 20px;
-  }
+}
+h1{
+   animation-name:example;
+   animation-duration:3s;
+   animation-iteration-count:infinite;
+   animation-timing-function: ease-in-out;
+} 

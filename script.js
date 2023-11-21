@@ -40,7 +40,7 @@ constructor(data){
 }
 
 const container = document.querySelector(".container");
-const searchPage = document.querySelector(".search-page-container");
+const searchPage = document.querySelector(".searchPageContainer");
 const searchBtn = document.querySelector(".search-btn");
 const searchInput = document.querySelector(".input-search-bar");
 
@@ -49,44 +49,41 @@ searchBtn.addEventListener("click", async (e) => {
   let res = await fetch(`https://www.omdbapi.com/?t=${searchInput.value}&apikey=d1bb3140`);
   let json = await res.json();
   
-  if (container.contains(searchPage)) {
-      container.removeChild(searchPage);
+  if (json && json.Title) {
+    let movieDiv = renderMovie(json);
+    searchPage.innerHTML = ''; 
+    searchPage.appendChild(movieDiv);
+  } else {
+   
+    searchPage.innerText = "Movie details not found";
   }
-  
-  searchInput.value = "";
-  let div = renderMovie(json);
-  container.appendChild(div);
 });
 
-// Just an example
 function renderMovie(json) {
-  let moviediv = document.createElement("div");
-  moviediv.classList.add("movie-container");
+  let movieDiv = document.createElement("div");
+  movieDiv.classList.add("movie-container");
 
-  if (json && json.Title) {
-      let title = document.createElement("h4");
-      title.innerText = json.Title;
+  let title = document.createElement("h4");
+  title.innerText = json.Title;
 
-      let rating = document.createElement("p");
-      rating.innerText = `IMDb Rating: ${json.imdbRating || 'N/A'}`;
+  let rating = document.createElement("p");
+  rating.innerText = `IMDb Rating: ${json.imdbRating || 'N/A'}`;
 
-      let posterImg = document.createElement("img");
-      posterImg.src = json.Poster !== 'N/A' ? json.Poster : 'placeholder_image_url.jpg'; // Replace 'placeholder_image_url.jpg' with your fallback image URL or set an appropriate default image
-      posterImg.alt = json.Title; // Set the alt attribute for accessibility
+  let posterImg = document.createElement("img");
+  posterImg.src = json.Poster !== 'N/A' ? json.Poster : 'placeholder_image_url.jpg';
+  posterImg.alt = json.Title;
 
-      let button = document.createElement("button");
-      button.innerText = "Add to Watchlist";
-      button.addEventListener("click", () => {
-         console.log("added to watchlist");
-      });
+  // let button = document.createElement("button");
+  // button.innerText = "Add to Watchlist";
+  // button.style.margin="20px auto";
+  // button.addEventListener("click", () => {
+  //    console.log("added to watchlist");
+  // });
 
-      moviediv.appendChild(title);
-      moviediv.appendChild(rating);
-      moviediv.appendChild(posterImg);
-      moviediv.appendChild(button);
-  } else {
-      moviediv.innerText = "Movie details not found";
-  }
+  movieDiv.appendChild(title);
+  movieDiv.appendChild(rating);
+  movieDiv.appendChild(posterImg);
+  //movieDiv.appendChild(button);
 
-  return moviediv;
+  return movieDiv;
 }
