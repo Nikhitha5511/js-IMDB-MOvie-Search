@@ -1,3 +1,5 @@
+
+
 function getMovie(movieTitle) {
   return fetch(`https://www.omdbapi.com/?t=${movieTitle}&apikey=d1bb3140`)
     .then((res) => res.json())
@@ -7,59 +9,61 @@ function getMovie(movieTitle) {
     });
 }
 
-
-/*Movie Class*/
-class Movie {
-constructor(data){
-  Object.assign(this, data);
-  }
-  
-  renderMovie() {
-    return ` 
-    <div class="movie-container">
-    <div class="image-container">
-           <img src='${this.Poster}'/>
-    </div>
-    <div class="movie-content-container">
-      <div class="title">
-        <h4>${this.Title}</h4>
-        <p>${this.imdbRating}</p>
-      </div>
-      <div class="movie-details">
-        <p>${this.Runtime}</p>
-        <p>${this.Genre}</p>
-        <button class="add-watchlist-btn">Watchlist</button>
-      </div>
-      <div class="movie-desc">
-        <p>${this.Plot}</p>
-      </div>
-    </div>
-    </div>
-  `;
-  }
-}
-
 const container = document.querySelector(".container");
 const searchPage = document.querySelector(".searchPageContainer");
 const searchBtn = document.querySelector(".search-btn");
 const searchInput = document.querySelector(".input-search-bar");
 
-searchBtn.addEventListener("click", async (e) => {
-  e.preventDefault();
-  let res = await fetch(`https://www.omdbapi.com/?t=${searchInput.value}&apikey=d1bb3140`);
-  let json = await res.json();
+
+const spinner = document.createElement("div");
+spinner.classList.add("spinner");
+searchPage.appendChild(spinner);
+spinner.style.display = "none";
+
+let debounceTimer;
+
+function initiateSearch() {
+ 
+  spinner.style.display = "block";
+  const inputValue = searchInput.value.trim();
+  console.log("Typing...");
+  clearTimeout(debounceTimer);
   
-  if (json && json.Title) {
-    let movieDiv = renderMovie(json);
-    searchPage.innerHTML = ''; 
-    searchPage.appendChild(movieDiv);
-  } else {
-   
-    searchPage.innerText = "Movie details not found";
-  }
+  debounceTimer = setTimeout(async () => {
+    console.log(inputValue);
+    let res = await fetch(`https://www.omdbapi.com/?t=${inputValue}&apikey=d1bb3140`);
+    let json = await res.json();
+    
+    if (json && json.Title) {
+      let movieDiv = renderMovie(json);
+      searchPage.innerHTML = '';
+      searchPage.appendChild(movieDiv);
+      
+      const movieDetails = document.getElementById("movieDetails");
+      movieDetails.innerHTML = '';
+    } else {
+      searchPage.innerHTML = ''; 
+
+    let notFoundMessage = document.createElement("p");
+    notFoundMessage.innerText = "Movie details not found";
+    notFoundMessage.classList.add("not-found-message");
+    searchPage.appendChild(notFoundMessage);
+
+    spinner.style.display = "none";
+    }
+  }, 1000); 
+}
+
+searchInput.addEventListener("input", initiateSearch);
+
+searchBtn.addEventListener("click", async (e) => {
+
+  e.preventDefault();
+  await initiateSearch();
 });
 
 function renderMovie(json) {
+  
   let movieDiv = document.createElement("div");
   movieDiv.classList.add("movie-container");
 
@@ -73,17 +77,57 @@ function renderMovie(json) {
   posterImg.src = json.Poster !== 'N/A' ? json.Poster : 'placeholder_image_url.jpg';
   posterImg.alt = json.Title;
 
-  // let button = document.createElement("button");
-  // button.innerText = "Add to Watchlist";
-  // button.style.margin="20px auto";
-  // button.addEventListener("click", () => {
-  //    console.log("added to watchlist");
-  // });
+  let moreDetailsButton = document.createElement("button");
+  moreDetailsButton.classList.add('showMoreButton')
+  moreDetailsButton.innerText = "Show More Details";
+  moreDetailsButton.addEventListener("click", async () => {
+    const detailedInfo = await fetchDetailedInfo(json.imdbID);
+    displayMovieDetails(detailedInfo);
+  });
 
   movieDiv.appendChild(title);
   movieDiv.appendChild(rating);
   movieDiv.appendChild(posterImg);
-  //movieDiv.appendChild(button);
+  movieDiv.appendChild(moreDetailsButton);
+
+  const movieDetails = document.getElementById("movieDetails");
+  movieDetails.innerHTML = '';
 
   return movieDiv;
 }
+
+
+async function fetchDetailedInfo(movieId) {
+  const response = await fetch(`https://www.omdbapi.com/?i=${movieId}&apikey=d1bb3140`);
+  const movieDetails = await response.json();
+  return movieDetails;
+}
+
+function displayMovieDetails(detailedInfo) {
+ 
+  const movieDetails = document.getElementById("movieDetails");
+  movieDetails.innerHTML = '';
+
+  const plot = document.createElement('p');
+  plot.classList.add('plot-description');
+  plot.textContent = `Plot: ${detailedInfo.Plot || 'Not available'}`;
+
+  const cast = document.createElement('p');
+  cast.classList.add('cast-details');
+  cast.textContent = `Cast: ${detailedInfo.Actors || 'Not available'}`;
+
+  const releaseDate = document.createElement('p');
+  releaseDate.classList.add('releaseDate');
+  releaseDate.textContent = `Release Date: ${detailedInfo.Released || 'Not available'}`;
+
+  const ratings = document.createElement('p');
+  ratings.classList.add('ratings');
+  ratings.textContent = `Ratings: ${detailedInfo.imdbRating || 'Not available'}`;
+
+ movieDetails.innerHTML='';
+  movieDetails.appendChild(plot);
+  movieDetails.appendChild(cast);
+  movieDetails.appendChild(releaseDate);
+  movieDetails.appendChild(ratings);
+}
+

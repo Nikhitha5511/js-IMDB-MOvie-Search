@@ -4,7 +4,7 @@ body {
     padding: 0;
     text-align: center;
     height: 100vh;
-    background-color: antiquewhite;
+    background-color: rgb(254, 243, 229);
   }
   h1{
     color:rgb(77, 77, 123);
@@ -40,15 +40,20 @@ body {
   flex-direction: column;
 }
 
-button{
-  height:20px;
+.showMoreButton{
+  height:25px;
   background-color: rgb(78, 78, 134);
   color:white;
   border: none;
+  padding:2px;
   border-radius: 4px;
   text-align: center;
-  margin-top:-15px;
-  margin-right:50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top:30px;
+  margin-left: 850px;
+  cursor: pointer;
 }
 .movie-container{
   text-align: center;
@@ -69,3 +74,54 @@ h1{
    animation-iteration-count:infinite;
    animation-timing-function: ease-in-out;
 } 
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite; 
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.not-found-message{
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 30px;
+}
+
+img {
+  transition: transform 0.3s ease-in-out;
+}
+
+img:hover{
+  transform: scale(1.1);
+  margin-top: 10px;
+}
+
+.plot-description{
+  color:rgb(44, 100, 44);
+  font-size: 19px;
+  font-weight: bold;
+}
+.cast-details{
+  font-size: 19px;
+  color:black;
+  font-weight: bold;
+}
+.releaseDate{
+  color:rgb(44, 100, 44);
+  font-size: 19px;
+  font-weight: bold;
+}
+.ratings{
+  color:black;
+  font-size: 19px;
+  font-weight: bold;
+}
